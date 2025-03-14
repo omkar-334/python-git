@@ -128,7 +128,7 @@ def main():
             f.write(data)
         print(hash)
     elif command == "ls-tree":
-        hash = "a012bf7ae0ee68992570d8172871eb86f4b7e96d"
+        hash = sys.argv[3]
         tree = LsTreeModel(hash)
         tree.call(sys.argv[2])
 
