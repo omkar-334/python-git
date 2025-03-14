@@ -28,7 +28,7 @@ def main():
         hash = sha1(content).hexdigest()
         os.makedirs(f".git/objects/{hash[:2]}", exist_ok=True)
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
-            f.write(content)
+            f.write(data)
         print(hash)
     else:
         raise RuntimeError(f"Unknown command #{command}")
