@@ -3,7 +3,7 @@ import sys
 import zlib
 from hashlib import sha1
 
-from ls_tree import LsTreeModel
+from .ls_tree import LsTreeModel
 
 
 def hash_object(path):
