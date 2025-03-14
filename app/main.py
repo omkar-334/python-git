@@ -104,8 +104,9 @@ def main():
             parent_hash = sys.argv[4]
             if sys.argv[5] == "-m":
                 commit_message = sys.argv[6]
-        if parent_hash:
-            parent_clause = f"parent {parent_hash}\n"
+
+        parent_clause = f"parent {parent_hash}\n" if parent_hash else ""
+
         commit_content = (
             f"tree {tree_hash}\n{parent_clause}"
             f"author Omkar Kabde <omkarkabde@gmail.com> 1234567890 -0700\n"
