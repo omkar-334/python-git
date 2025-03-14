@@ -37,7 +37,6 @@ class LsTreeModel:
         self.recurse()
 
     def parse(self, hash):
-        print(os.listdir(".git/objects"))
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = zlib.decompress(f.read())
         tree, content = data.split(b"\0", maxsplit=1)
@@ -128,6 +127,7 @@ def main():
             f.write(data)
         print(hash)
     elif command == "ls-tree":
+        # hash = "a012bf7ae0ee68992570d8172871eb86f4b7e96d"
         hash = sys.argv[3]
         tree = LsTreeModel(hash)
         tree.call(sys.argv[2])
