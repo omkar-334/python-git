@@ -113,7 +113,7 @@ def main():
             f"committer Omkar Kabde <omkarkabde@gmail.com> 1234567890 -0700\n\n"
             f"{commit_message}\n"
         )
-        hash = hash_object("commit ", commit_content.encode("utf-8"))
+        hash = hash_object("commit", commit_content.encode("utf-8"))
         print(hash)
 
     else:
