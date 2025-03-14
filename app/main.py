@@ -48,7 +48,7 @@ def write_tree(path: str):
 
     with open(f"{dir_path}/{hash[2:]}", "wb") as f:
         f.write(zlib.compress(s))
-    return sha1
+    return hash
 
 
 def main():
