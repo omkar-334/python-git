@@ -1,13 +1,10 @@
 import os
+import re
 import sys
+import zlib
 
 
 def main():
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
-    print("Logs from your program will appear here!", file=sys.stderr)
-
-    # Uncomment this block to pass the first stage
-    #
     command = sys.argv[1]
     if command == "init":
         os.mkdir(".git")
@@ -16,6 +13,14 @@ def main():
         with open(".git/HEAD", "w") as f:
             f.write("ref: refs/heads/main\n")
         print("Initialized git directory")
+
+    elif command == "cat-file":
+        hash = sys.argv[3]
+        with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
+            data = zlib.decompress(f.read()).decode()
+            data = re.sub("blob [1-9]*", "", data)
+            data = data.removesuffix("\n")
+        return data
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
