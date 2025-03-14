@@ -80,7 +80,7 @@ class LsTreeModel:
             idx += 1
 
     def name_only(self):
-        print(*[i["name"] for i in self.entries], sep="\n")
+        print(*[i["name"] for i in self.entries if i["parent"] == self.tree], sep="\n")
 
     def print_tree(self, filter_func=None):
         for entry in self.entries:
