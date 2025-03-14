@@ -14,13 +14,12 @@ def main():
             f.write("ref: refs/heads/main\n")
         print("Initialized git directory")
 
-    elif command == "cat-file":
+    elif command == "cat-file" and sys.argv[2] == "-p":
         hash = sys.argv[3]
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = zlib.decompress(f.read()).decode()
-            data = re.sub("blob [1-9]*", "", data)
-            data = data.removesuffix("\n")
-        return data
+            header, content = data.split(b"\0", maxsplit=1)
+            print(content.decode(encoding="utf-8"), end="")
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
