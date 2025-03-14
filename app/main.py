@@ -7,8 +7,7 @@ from .ls_tree import LsTreeModel
 
 
 def hash_object(path):
-    with open(path, "rb").read() as f:
-        content = f.read()
+    content = open(path, "rb").read()
 
     content = f"blob {len(content)}\0".encode("utf-8") + content
     hash = sha1(content).hexdigest()
