@@ -6,10 +6,8 @@ from hashlib import sha1
 from .ls_tree import LsTreeModel
 
 
-def hash_object(path):
-    content = open(path, "rb").read()
-
-    content = f"blob {len(content)}\0".encode("utf-8") + content
+def hash_object(obj_type, content):
+    content = f"{obj_type} {len(content)}\0".encode("utf-8") + content
     hash = sha1(content).hexdigest()
 
     dir_path = f".git/objects/{hash[:2]}"
@@ -22,7 +20,8 @@ def hash_object(path):
 
 def write_tree(path: str):
     if os.path.isfile(path):
-        return hash_object(path)
+        content = open(path, "rb").read()
+        return hash_object("blob", content)
 
     contents = sorted(
         os.listdir(path),
@@ -51,6 +50,21 @@ def write_tree(path: str):
     return hash
 
 
+# case ["commit-tree", tree_sha, "-p", commit_sha, "-m", message]:
+# contents = b"".join(
+#     [
+#         b"tree %b\n" % tree_sha.encode(),
+#         b"parent %b\n" % commit_sha.encode(),
+#         b"author ggzor <30713864+ggzor@users.noreply.github.com> 1714599041 -0600\n",
+#         b"committer ggzor <30713864+ggzor@users.noreply.github.com> 1714599041 -0600\n\n",
+#         message.encode(),
+#         b"\n",
+#     ]
+# )
+# hash = write_object(Path("."), "commit", contents)
+# print(hash)
+
+
 def main():
     command = sys.argv[1]
     if command == "init":
@@ -69,7 +83,8 @@ def main():
             print(content.decode(encoding="utf-8"), end="")
     elif command == "hash-object" and sys.argv[2] == "-w":
         path = sys.argv[3]
-        hash = hash_object(path)
+        content = open(path, "rb").read()
+        hash = hash_object("blob", content)
         print(hash)
     elif command == "ls-tree":
         hash = sys.argv[3]
@@ -78,6 +93,27 @@ def main():
 
     elif command == "write-tree":
         print(write_tree("./"))
+
+    elif command == "commit-tree":
+        tree_hash = sys.argv[2]
+        commit_message = None
+        parent_hash = None
+        if sys.argv[3] == "-m":
+            commit_message = sys.argv[4]
+        if sys.argv[3] == "-p":
+            parent_hash = sys.argv[4]
+            if sys.argv[5] == "-m":
+                commit_message = sys.argv[6]
+        if parent_hash:
+            parent_clause = f"parent {parent_hash}\n"
+        commit_content = (
+            f"tree {tree_hash}\n{parent_clause}"
+            f"author Omkar Kabde <omkarkabde@gmail.com> 1234567890 -0700\n"
+            f"committer Omkar Kabde <omkarkabde@gmail.com> 1234567890 -0700\n\n"
+            f"{commit_message}\n"
+        )
+        hash = hash_object("commit ", commit_content.encode("utf-8"))
+        print(hash)
 
     else:
         raise RuntimeError(f"Unknown command #{command}")
