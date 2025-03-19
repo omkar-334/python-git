@@ -1,4 +1,4 @@
-import zlib
+from .utils import read_object
 
 
 class LsTreeModel:
@@ -8,15 +8,15 @@ class LsTreeModel:
     -d                    only show trees
     -r                    recurse into subtrees
     -t                    show trees when recursing
-    -z                    terminate entries with NUL byte
-    -l, --long            include object size
+    # # -z                    terminate entries with NUL byte
+    # # -l, --long            include object size
     --name-only           list only filenames
-    --name-status         list only filenames
-    --object-only         list only objects
-    --full-name           use full path names
-    --full-tree           list entire tree; not just current directory (implies --full-name)
-    --format <format>     format to use for the output
-    --abbrev[=<n>]        use <n> digits to display object names
+    # # --name-status         list only filenames
+    # # --object-only         list only objects
+    # # --full-name           use full path names
+    # # --full-tree           list entire tree; not just current directory (implies --full-name)
+    # # --format <format>     format to use for the output
+    # # --abbrev[=<n>]        use <n> digits to display object names
 
     """
 
@@ -34,10 +34,10 @@ class LsTreeModel:
         self.recurse()
 
     def parse(self, hash):
-        with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
-            data = zlib.decompress(f.read())
-        tree, content = data.split(b"\0", maxsplit=1)
-        self.tree = tree.decode()
+        # with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
+        #     data = zlib.decompress(f.read())
+        # tree, content = data.split(b"\0", maxsplit=1)
+        self.tree, content = read_object(hash)
         while content:
             mode, rest = content.split(b" ", 1)
             name, rest = rest.split(b"\0", 1)

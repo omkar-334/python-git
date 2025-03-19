@@ -1,35 +1,8 @@
-import os
 import sys
-import zlib
-from hashlib import sha1
 from pathlib import Path
 
 from .ls_tree import LsTreeModel
-
-
-def get_hash_path(parent: Path, hash: str):
-    pre = hash[:2]
-    post = hash[2:]
-    p = parent / ".git" / "objects" / pre / post
-    return p
-
-
-def write_object(parent: Path, obj_type: str, content: bytes):
-    content = f"{obj_type} {len(content)}\0".encode("utf-8") + content
-    compressed_content = zlib.compress(content, level=zlib.Z_BEST_SPEED)
-    hash = sha1(content).hexdigest()
-
-    p = get_hash_path(parent, hash)
-    p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_bytes(compressed_content)
-
-
-def read_object(parent: Path, hash: str):
-    p = get_hash_path(parent, hash)
-    bs = p.read_bytes()
-    header, content = zlib.decompress(bs).split(b"\0", maxsplit=1)
-    obj_type, _ = header.split(b" ")
-    return obj_type.decode(), content
+from .utils import read_object, write_object
 
 
 def init_repo(parent: Path):
@@ -40,40 +13,31 @@ def init_repo(parent: Path):
     (parent / ".git" / "HEAD").write_text("ref: refs/heads/main\n")
 
 
-def write_tree(path: str):
-    if os.path.isfile(path):
-        content = open(path, "rb").read()
-        return write_object("blob", content)
+def write_tree(path: Path):
+    if path.is_file():
+        return write_object(Path("."), "blob", Path(path).read_bytes())
 
     contents = sorted(
-        os.listdir(path),
-        key=lambda x: x if os.path.isfile(os.path.join(path, x)) else f"{x}/",
+        path.iterdir(),
+        key=lambda x: x.name if x.is_file() else f"{x.name}/",
     )
     s = b""
+
     for item in contents:
-        if item == ".git":
+        if item.name == ".git":
             continue
-        full = os.path.join(path, item)
-        if os.path.isfile(full):
-            s += f"100644 {item}\0".encode()
-        else:
-            s += f"40000 {item}\0".encode()
-        hash = int.to_bytes(int(write_tree(full), base=16), length=20, byteorder="big")
-        s += hash
+        mode = "100644" if item.is_file() else "40000"
+        s += f"{mode} {item.name}\0".encode()
+        obj_hash = int.to_bytes(int(write_tree(item), 16), 20, "big")
+        s += obj_hash
 
-    s = f"tree {len(s)}\0".encode() + s
-    hash = sha1(s).hexdigest()
+    hash = write_object(Path("."), "tree", s)
 
-    dir_path = f".git/objects/{hash[:2]}"
-    os.makedirs(dir_path, exist_ok=True)
-
-    with open(f"{dir_path}/{hash[2:]}", "wb") as f:
-        f.write(zlib.compress(s))
     return hash
 
 
 def main():
-    match sys.argv[1]:
+    match sys.argv[1:]:
         case ["init"]:
             init_repo(Path("."))
             print("Initialized git directory")
