@@ -11,7 +11,8 @@ def get_hash_path(parent: Path, hash: str):
 
 
 def write_object(parent: Path, obj_type: str, content: bytes):
-    content = f"{obj_type} {len(content)}\0".encode("utf-8") + content
+    content = obj_type.encode() + b" " + f"{len(content)}".encode() + b"\0" + content
+    # content = f"{obj_type} {len(content)}\0".encode("utf-8") + content
     compressed_content = zlib.compress(content, level=zlib.Z_BEST_SPEED)
     hash = sha1(content).hexdigest()
 
