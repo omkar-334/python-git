@@ -70,7 +70,7 @@ def main():
                 f"committer Omkar Kabde <omkarkabde@gmail.com> 1234567890 -0700\n\n"
                 f"{message}\n"
             )
-            hash = write_object(Path("."), "commit", commit_content)
+            hash = write_object(Path("."), "commit", commit_content.encode())
             print(hash)
 
         case ["clone", url, dir]:
