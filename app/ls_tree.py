@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from .utils import read_object
 
 
@@ -37,7 +39,7 @@ class LsTreeModel:
         # with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
         #     data = zlib.decompress(f.read())
         # tree, content = data.split(b"\0", maxsplit=1)
-        self.tree, content = read_object(hash)
+        self.tree, content = read_object(Path("."), hash)
         while content:
             mode, rest = content.split(b" ", 1)
             name, rest = rest.split(b"\0", 1)
