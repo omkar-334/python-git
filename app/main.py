@@ -59,7 +59,8 @@ def main():
             tree.call(mode)
 
         case ["write-tree"]:
-            print(write_tree("./"))
+            parent = Path(".")
+            print(write_tree(parent))
 
         case ["commit-tree", tree_hash, "-p", parent_hash, "-m", message]:
             parent_clause = f"parent {parent_hash}\n" if parent_hash else ""
