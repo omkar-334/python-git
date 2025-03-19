@@ -188,3 +188,17 @@ https://blog.meain.io/2019/making-sure-you-wont-commit-conflict-markers/
 https://stackoverflow.com/questions/14790681/what-is-the-internal-format-of-a-git-tree-object    
 https://stackoverflow.com/questions/3178566/how-to-deflate-with-a-command-line-tool-to-extract-a-git-object  
 https://benhoyt.com/writings/pygit/#committing  
+
+# Clone Docs (need to go through again, check protocolv2)
+https://stackoverflow.com/questions/68062812/what-does-the-git-smart-https-protocol-fully-look-like-in-all-its-glory
+https://forum.codecrafters.io/t/step-for-git-clone-implementing-the-git-protocol/4407
+https://git-scm.com/docs/http-protocol
+https://git-scm.com/docs/git-upload-pack
+https://git-scm.com/docs/gitprotocol-pack
+https://git-scm.com/docs/gitformat-pack
+https://codewords.recurse.com/issues/three/unpacking-git-packfiles
+https://medium.com/@concertdaw/sneaky-git-number-encoding-ddcc5db5329f
+https://forum.codecrafters.io/t/python-mg6-clone-command-stuck-on-tree-checkout/4747/11
+https://i27ae15.github.io/git-protocol-doc/
+https://github.com/eaverdeja/codecrafters-git-python/tree/master
+https://github.com/benhoyt/pygit
