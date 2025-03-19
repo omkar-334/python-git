@@ -48,7 +48,7 @@ def main():
 
         case ["cat-file", "-p", hash]:
             _, content = read_object(Path("."), hash)
-            print(content)
+            sys.stdout.buffer.write(content)
 
         case ["hash-object", "-w", path]:
             hash = write_object(Path("."), "blob", Path(path).read_bytes())
